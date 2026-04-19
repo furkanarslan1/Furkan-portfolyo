@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "role": "Full Stack Developer",
+    "subtitle": "I build modern and user-friendly web applications.",
+    "cta_projects": "View My Projects",
+    "cta_contact": "Get In Touch"
+  },
+  "about": {
+    "title": "About Me",
+    "description": "Hi! I'm Furkan, a passionate software developer."
+  },
+  "skills": {
+    "title": "Skills",
+    "subtitle": "Technologies and tools I work with"
+  },
+  "experience": {
+    "title": "Experience",
+    "present": "Present"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Some projects I've built",
+    "view_live": "Live Demo",
+    "view_code": "View Code",
+    "view_all": "View All Projects"
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "Have a project in mind? Let's talk.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "sending": "Sending...",
+    "success": "Message sent!",
+    "error": "Something went wrong, please try again."
+  }
+}

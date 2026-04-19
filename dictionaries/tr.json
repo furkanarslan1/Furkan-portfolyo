@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "about": "Hakkımda",
+    "skills": "Yetenekler",
+    "experience": "Deneyim",
+    "projects": "Projeler",
+    "contact": "İletişim"
+  },
+  "hero": {
+    "greeting": "Merhaba, ben",
+    "role": "Full Stack Geliştirici",
+    "subtitle": "Modern ve kullanıcı dostu web uygulamaları geliştiriyorum.",
+    "cta_projects": "Projelerimi Gör",
+    "cta_contact": "İletişime Geç"
+  },
+  "about": {
+    "title": "Hakkımda",
+    "description": "Merhaba! Ben Furkan, tutkulu bir yazılım geliştiricisiyim."
+  },
+  "skills": {
+    "title": "Yetenekler",
+    "subtitle": "Kullandığım teknolojiler ve araçlar"
+  },
+  "experience": {
+    "title": "Deneyim",
+    "present": "Günümüz"
+  },
+  "projects": {
+    "title": "Projeler",
+    "subtitle": "Geliştirdiğim bazı projeler",
+    "view_live": "Canlıya Git",
+    "view_code": "Kodu Gör",
+    "view_all": "Tüm Projeleri Gör"
+  },
+  "contact": {
+    "title": "İletişim",
+    "description": "Bir projeniz mi var? Konuşalım.",
+    "name": "İsim",
+    "email": "E-posta",
+    "message": "Mesaj",
+    "send": "Gönder",
+    "sending": "Gönderiliyor...",
+    "success": "Mesajınız gönderildi!",
+    "error": "Bir hata oluştu, tekrar deneyin."
+  }
+}
