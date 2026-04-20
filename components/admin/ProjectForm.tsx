@@ -1,0 +1,138 @@
+'use client'
+
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { createProject } from '@/lib/actions/projects'
+
+const schema = z.object({
+  slug: z.string().min(1, 'Zorunlu'),
+  titleTr: z.string().min(1, 'Zorunlu'),
+  titleEn: z.string().min(1, 'Zorunlu'),
+  shortDescTr: z.string().min(1, 'Zorunlu'),
+  shortDescEn: z.string().min(1, 'Zorunlu'),
+  descTr: z.string().min(1, 'Zorunlu'),
+  descEn: z.string().min(1, 'Zorunlu'),
+  imageUrl: z.string().url('Geçerli URL giriniz'),
+  imagePublicId: z.string().min(1, 'Zorunlu'),
+  liveUrl: z.string().url('Geçerli URL').optional().or(z.literal('')),
+  githubUrl: z.string().url('Geçerli URL').optional().or(z.literal('')),
+  tags: z.string().min(1, 'En az bir etiket giriniz'),
+  order: z.coerce.number().default(0),
+})
+
+type FormValues = z.infer<typeof schema>
+
+export default function ProjectForm() {
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  })
+
+  function onSubmit(values: FormValues) {
+    const fd = new FormData()
+    Object.entries(values).forEach(([k, v]) => fd.append(k, String(v ?? '')))
+    fd.append('published', 'true')
+
+    startTransition(async () => {
+      await createProject(fd)
+      router.push('/admin/projects')
+    })
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-2xl">
+      {/* Slug */}
+      <Field label="Slug" error={errors.slug?.message}>
+        <Input {...register('slug')} placeholder="qr-menu" />
+      </Field>
+
+      {/* Titles */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Başlık (TR)" error={errors.titleTr?.message}>
+          <Input {...register('titleTr')} />
+        </Field>
+        <Field label="Başlık (EN)" error={errors.titleEn?.message}>
+          <Input {...register('titleEn')} />
+        </Field>
+      </div>
+
+      {/* Short descriptions */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Kısa Açıklama (TR)" error={errors.shortDescTr?.message}>
+          <Textarea {...register('shortDescTr')} rows={3} />
+        </Field>
+        <Field label="Kısa Açıklama (EN)" error={errors.shortDescEn?.message}>
+          <Textarea {...register('shortDescEn')} rows={3} />
+        </Field>
+      </div>
+
+      {/* Full descriptions */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Açıklama (TR)" error={errors.descTr?.message}>
+          <Textarea {...register('descTr')} rows={5} />
+        </Field>
+        <Field label="Açıklama (EN)" error={errors.descEn?.message}>
+          <Textarea {...register('descEn')} rows={5} />
+        </Field>
+      </div>
+
+      {/* Image */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Görsel URL" error={errors.imageUrl?.message}>
+          <Input {...register('imageUrl')} placeholder="https://res.cloudinary.com/..." />
+        </Field>
+        <Field label="Cloudinary Public ID" error={errors.imagePublicId?.message}>
+          <Input {...register('imagePublicId')} placeholder="portfolio/qr-menu" />
+        </Field>
+      </div>
+
+      {/* Links */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Canlı URL (opsiyonel)" error={errors.liveUrl?.message}>
+          <Input {...register('liveUrl')} placeholder="https://..." />
+        </Field>
+        <Field label="GitHub URL (opsiyonel)" error={errors.githubUrl?.message}>
+          <Input {...register('githubUrl')} placeholder="https://github.com/..." />
+        </Field>
+      </div>
+
+      {/* Tags & Order */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Etiketler (virgülle ayırın)" error={errors.tags?.message}>
+          <Input {...register('tags')} placeholder="Next.js, TypeScript, Tailwind" />
+        </Field>
+        <Field label="Sıra" error={errors.order?.message}>
+          <Input {...register('order')} type="number" defaultValue={0} />
+        </Field>
+      </div>
+
+      <div className="flex gap-3">
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Kaydediliyor...' : 'Kaydet'}
+        </Button>
+        <Button type="button" variant="outline" onClick={() => router.back()}>
+          İptal
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  )
+}
