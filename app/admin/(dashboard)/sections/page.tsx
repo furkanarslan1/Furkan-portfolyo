@@ -2,19 +2,32 @@ import { db } from '@/lib/db'
 import { sectionContent } from '@/lib/db/schema'
 import SectionEditor from './SectionEditor'
 
-const sectionKeys = [
-  { key: 'hero', label: 'Hero', fields: [
-    { name: 'greetingTr', label: 'Karşılama (TR)', type: 'input' },
-    { name: 'greetingEn', label: 'Karşılama (EN)', type: 'input' },
-    { name: 'subtitleTr', label: 'Alt Başlık (TR)', type: 'textarea' },
-    { name: 'subtitleEn', label: 'Alt Başlık (EN)', type: 'textarea' },
-  ]},
-  { key: 'about', label: 'Hakkımda', fields: [
-    { name: 'titleTr', label: 'Başlık (TR)', type: 'input' },
-    { name: 'titleEn', label: 'Başlık (EN)', type: 'input' },
-    { name: 'descTr', label: 'Açıklama (TR)', type: 'textarea' },
-    { name: 'descEn', label: 'Açıklama (EN)', type: 'textarea' },
-  ]},
+type SectionField =
+  | { name: string; label: string; type: 'input' | 'textarea' }
+  | { name: string; publicIdName: string; label: string; type: 'imageUpload'; folder: string }
+
+const sectionKeys: { key: string; label: string; fields: SectionField[] }[] = [
+  {
+    key: 'hero',
+    label: 'Hero',
+    fields: [
+      { name: 'greetingTr', label: 'Karşılama (TR)', type: 'input' },
+      { name: 'greetingEn', label: 'Karşılama (EN)', type: 'input' },
+      { name: 'subtitleTr', label: 'Alt Başlık (TR)', type: 'textarea' },
+      { name: 'subtitleEn', label: 'Alt Başlık (EN)', type: 'textarea' },
+      { name: 'imageUrl', publicIdName: 'imagePublicId', label: 'Profil Fotoğrafı', type: 'imageUpload', folder: 'portfolio/hero' },
+    ],
+  },
+  {
+    key: 'about',
+    label: 'Hakkımda',
+    fields: [
+      { name: 'titleTr', label: 'Başlık (TR)', type: 'input' as const },
+      { name: 'titleEn', label: 'Başlık (EN)', type: 'input' as const },
+      { name: 'descTr', label: 'Açıklama (TR)', type: 'textarea' as const },
+      { name: 'descEn', label: 'Açıklama (EN)', type: 'textarea' as const },
+    ],
+  },
 ]
 
 export default async function SectionsPage() {

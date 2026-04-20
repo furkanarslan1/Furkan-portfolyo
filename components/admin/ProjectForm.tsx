@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createProject } from '@/lib/actions/projects'
+import ImageUploader from './ImageUploader'
 
 const schema = z.object({
   titleTr: z.string().min(1, 'Zorunlu'),
@@ -18,12 +19,12 @@ const schema = z.object({
   shortDescEn: z.string().min(1, 'Zorunlu'),
   descTr: z.string().min(1, 'Zorunlu'),
   descEn: z.string().min(1, 'Zorunlu'),
-  imageUrl: z.string().url('Geçerli URL giriniz'),
-  imagePublicId: z.string().min(1, 'Zorunlu'),
+  imageUrl: z.string().min(1, 'Görsel yükleyin'),
+  imagePublicId: z.string().min(1, 'Görsel yükleyin'),
   liveUrl: z.string().url('Geçerli URL').optional().or(z.literal('')),
   githubUrl: z.string().url('Geçerli URL').optional().or(z.literal('')),
   tags: z.string().min(1, 'En az bir etiket giriniz'),
-  order: z.coerce.number().default(0),
+  order: z.number().int().nonnegative(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -32,8 +33,9 @@ export default function ProjectForm() {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    defaultValues: { imageUrl: '', imagePublicId: '', order: 0 },
   })
 
   function onSubmit(values: FormValues) {
@@ -79,15 +81,30 @@ export default function ProjectForm() {
         </Field>
       </div>
 
-      {/* Image */}
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Görsel URL" error={errors.imageUrl?.message}>
-          <Input {...register('imageUrl')} placeholder="https://res.cloudinary.com/..." />
-        </Field>
-        <Field label="Cloudinary Public ID" error={errors.imagePublicId?.message}>
-          <Input {...register('imagePublicId')} placeholder="portfolio/qr-menu" />
-        </Field>
-      </div>
+      {/* Image upload */}
+      <Controller
+        control={control}
+        name="imageUrl"
+        render={({ field }) => (
+          <Field label="Proje Görseli" error={errors.imageUrl?.message}>
+            <Controller
+              control={control}
+              name="imagePublicId"
+              render={({ field: pidField }) => (
+                <ImageUploader
+                  folder="portfolio/projects"
+                  value={field.value}
+                  publicId={pidField.value}
+                  onChange={(url, pid) => {
+                    field.onChange(url)
+                    pidField.onChange(pid)
+                  }}
+                />
+              )}
+            />
+          </Field>
+        )}
+      />
 
       {/* Links */}
       <div className="grid grid-cols-2 gap-4">
@@ -105,7 +122,7 @@ export default function ProjectForm() {
           <Input {...register('tags')} placeholder="Next.js, TypeScript, Tailwind" />
         </Field>
         <Field label="Sıra" error={errors.order?.message}>
-          <Input {...register('order')} type="number" defaultValue={0} />
+          <Input {...register('order', { valueAsNumber: true })} type="number" defaultValue={0} />
         </Field>
       </div>
 

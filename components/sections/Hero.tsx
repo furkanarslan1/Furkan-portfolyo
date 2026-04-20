@@ -11,10 +11,18 @@ type HeroDict = {
 
 export default function Hero({
   dict,
+  locale,
+  heroContent,
 }: {
   dict: HeroDict;
   locale: Locale;
+  heroContent: Record<string, string> | null;
 }) {
+  const subtitleKey = locale === 'tr' ? 'subtitleTr' : 'subtitleEn'
+  const subtitle = heroContent?.[subtitleKey] || dict.subtitle
+
+  const photoUrl = heroContent?.imageUrl || '/hero.png'
+
   return (
     <section
       id="hero"
@@ -37,7 +45,7 @@ export default function Hero({
         {/* Photo */}
         <div className="shrink-0 relative w-64 sm:w-72 aspect-3/4 rounded-3xl overflow-hidden md:mb-8">
           <Image
-            src="/hero.png"
+            src={photoUrl}
             alt="Furkan Arslan"
             fill
             className="object-cover object-top"
@@ -49,7 +57,7 @@ export default function Hero({
         <div className="flex-1 flex flex-col gap-6 text-center md:text-left">
           <div className="animated-border-image rounded-2xl p-5">
             <p className="text-white/70 text-base sm:text-lg leading-relaxed">
-              {dict.subtitle}
+              {subtitle}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
