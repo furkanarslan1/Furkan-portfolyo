@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createProject } from '@/lib/actions/projects'
 import ImageUploader from './ImageUploader'
+import { toast } from 'sonner'
 
 const schema = z.object({
   titleTr: z.string().min(1, 'Zorunlu'),
@@ -44,8 +45,13 @@ export default function ProjectForm() {
     fd.append('published', 'true')
 
     startTransition(async () => {
-      await createProject(fd)
-      router.push('/admin/projects')
+      try {
+        await createProject(fd)
+        toast.success('Proje kaydedildi')
+        router.push('/admin/projects')
+      } catch {
+        toast.error('Kaydetme başarısız')
+      }
     })
   }
 

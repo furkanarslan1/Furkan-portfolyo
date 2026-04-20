@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { upsertSection } from '@/lib/actions/sections'
 import ImageUploader from '@/components/admin/ImageUploader'
+import { toast } from 'sonner'
 
 type Field =
   | { name: string; label: string; type: 'input' | 'textarea' }
@@ -29,7 +30,12 @@ export default function SectionEditor({
 
   function onSubmit(values: Record<string, string>) {
     startTransition(async () => {
-      await upsertSection(sectionKey, values)
+      try {
+        await upsertSection(sectionKey, values)
+        toast.success('Kaydedildi')
+      } catch {
+        toast.error('Kaydetme başarısız')
+      }
     })
   }
 

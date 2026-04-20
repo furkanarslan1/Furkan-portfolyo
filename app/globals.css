@@ -161,6 +161,16 @@
   50% { transform: translate(90px, -100px) scale(0.85); }
 }
 
+@keyframes spin-orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-counter {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
 @keyframes skillPulse {
   0%, 100% {
     box-shadow: none;
