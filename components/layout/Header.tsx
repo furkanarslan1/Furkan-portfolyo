@@ -23,7 +23,7 @@ export default function Header({ dict, locale }: { dict: Dict; locale: Locale })
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <a href="#" className="text-lg font-semibold tracking-tight">
+        <a href="#" className="text-lg font-semibold tracking-tight text-white">
           Furkan Arslan
         </a>
 
@@ -32,7 +32,7 @@ export default function Header({ dict, locale }: { dict: Dict; locale: Locale })
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity"
+              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
             >
               {item.label}
             </a>
@@ -40,7 +40,7 @@ export default function Header({ dict, locale }: { dict: Dict; locale: Locale })
           <LocaleSwitcher locale={locale} />
         </nav>
 
-        <div className="flex md:hidden">
+        <div className="flex md:hidden text-white">
           <MobileMenu navItems={navItems} locale={locale} />
         </div>
       </div>

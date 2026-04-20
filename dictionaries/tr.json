@@ -8,8 +8,8 @@
   },
   "hero": {
     "greeting": "Merhaba, ben",
-    "role": "Full Stack Geliştirici",
-    "subtitle": "Modern ve kullanıcı dostu web uygulamaları geliştiriyorum.",
+    "role": "Fronted Developer",
+    "subtitle": "Ben, modern web teknolojileriyle kullanıcı odaklı arayüzler geliştiren bir Frontend Developer’ım. Özellikle React, Next.js ve TypeScript ile performanslı, ölçeklenebilir ve responsive web uygulamaları oluşturma konusunda çalışıyorum. Geliştirdiğim projelerden edindiğim deneyimle, hem kullanıcı deneyimini hem de teknik performansı ön planda tutuyorum. Temiz kod, sürdürülebilir yapı ve hızlı kullanıcı deneyimi benim için her zaman öncelik.",
     "cta_projects": "Projelerimi Gör",
     "cta_contact": "İletişime Geç"
   },

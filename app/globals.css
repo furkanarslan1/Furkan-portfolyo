@@ -128,3 +128,67 @@
     @apply font-sans;
   }
 }
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to { --border-angle: 360deg; }
+}
+
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(167,139,250,0.3); opacity: 0.7; }
+  50% { box-shadow: 0 0 18px 6px rgba(167,139,250,0.6); opacity: 1; }
+}
+
+@keyframes blob1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(120px, -80px) scale(1.15); }
+  66% { transform: translate(-80px, 60px) scale(0.9); }
+}
+
+@keyframes blob2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-100px, 80px) scale(1.1); }
+  66% { transform: translate(80px, -60px) scale(1.2); }
+}
+
+@keyframes blob3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(90px, -100px) scale(0.85); }
+}
+
+@layer utilities {
+  .breathe {
+    animation: breathe 2.5s ease-in-out infinite;
+    border: 1px solid rgba(167,139,250,0.4);
+  }
+
+  .animated-border-image {
+    position: relative;
+  }
+
+  .animated-border-image::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--border-angle),
+      transparent 60%,
+      #a78bfa 75%,
+      #818cf8 85%,
+      transparent 95%
+    );
+    animation: border-spin 3s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: 10;
+    pointer-events: none;
+  }
+}
