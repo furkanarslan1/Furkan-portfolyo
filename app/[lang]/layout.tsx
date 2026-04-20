@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import '../globals.css'
 import { getDictionary, hasLocale } from './dictionaries'
 import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -67,6 +68,7 @@ export default async function RootLayout({
         </div>
         <Header dict={dict} locale={lang} />
         {children}
+        <Footer />
       </body>
     </html>
   )
