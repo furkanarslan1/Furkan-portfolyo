@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import '../globals.css'
-import { hasLocale, type Locale } from './dictionaries'
+import { getDictionary, hasLocale } from './dictionaries'
+import Header from '@/components/layout/Header'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,12 +32,18 @@ export default async function RootLayout({
 
   if (!hasLocale(lang)) notFound()
 
+  const dict = await getDictionary(lang)
+
   return (
     <html
       lang={lang}
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
+      data-scroll-behavior="smooth"
     >
-      <body className="min-h-full bg-background text-foreground">{children}</body>
+      <body className="min-h-full bg-background text-foreground">
+        <Header dict={dict} locale={lang} />
+        {children}
+      </body>
     </html>
   )
 }
