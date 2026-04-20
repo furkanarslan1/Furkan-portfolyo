@@ -161,6 +161,24 @@
   50% { transform: translate(90px, -100px) scale(0.85); }
 }
 
+@keyframes skillPulse {
+  0%, 100% {
+    box-shadow: none;
+    border-color: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+  }
+  2% {
+    box-shadow: 0 0 16px 4px var(--glow-color, #a78bfa), 0 0 6px 1px var(--glow-color, #a78bfa);
+    border-color: var(--glow-color, #a78bfa);
+    background: rgba(255,255,255,0.08);
+  }
+  6% {
+    box-shadow: none;
+    border-color: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+  }
+}
+
 @layer utilities {
   .breathe {
     animation: breathe 2.5s ease-in-out infinite;

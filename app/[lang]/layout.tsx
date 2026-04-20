@@ -40,7 +40,31 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
       data-scroll-behavior="smooth"
     >
-      <body className="min-h-full bg-background text-foreground">
+      <body className="min-h-full bg-[#0a0a0f] text-foreground">
+        {/* Global animated background */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+          <div
+            className="absolute -top-20 -left-20 w-96 h-96 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(109,40,217,0.55), transparent 70%)',
+              animation: 'blob1 9s ease-in-out infinite',
+            }}
+          />
+          <div
+            className="absolute bottom-10 right-0 w-80 h-80 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(67,56,202,0.5), transparent 70%)',
+              animation: 'blob2 12s ease-in-out infinite',
+            }}
+          />
+          <div
+            className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(139,92,246,0.4), transparent 70%)',
+              animation: 'blob3 7s ease-in-out infinite',
+            }}
+          />
+        </div>
         <Header dict={dict} locale={lang} />
         {children}
       </body>
