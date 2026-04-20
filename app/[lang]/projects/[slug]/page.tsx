@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 import GithubLink from '@/components/ui/GithubLink'
 import { getDictionary, hasLocale } from '@/app/[lang]/dictionaries'
-import { projects } from '@/lib/data/projects'
-import ImageSlider from '@/components/sections/ImageSlider'
+import { getProjectBySlug, getPublishedProjects } from '@/lib/db/queries'
 
 export async function generateStaticParams() {
+  const projects = await getPublishedProjects()
   return projects.flatMap((p) =>
     ['tr', 'en'].map((lang) => ({ lang, slug: p.slug }))
   )
@@ -18,10 +18,15 @@ export default async function ProjectPage({ params }: PageProps<'/[lang]/project
 
   if (!hasLocale(lang)) notFound()
 
-  const dict = await getDictionary(lang)
-  const project = projects.find((p) => p.slug === slug)
+  const [dict, project] = await Promise.all([
+    getDictionary(lang),
+    getProjectBySlug(slug),
+  ])
 
   if (!project) notFound()
+
+  const title = project.title as { tr: string; en: string }
+  const description = project.description as { tr: string; en: string }
 
   return (
     <main className="min-h-screen px-6 pt-28 pb-20">
@@ -38,8 +43,8 @@ export default async function ProjectPage({ params }: PageProps<'/[lang]/project
         {/* Cover image */}
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8">
           <Image
-            src={project.coverImage}
-            alt={project.title[lang]}
+            src={project.imageUrl}
+            alt={title[lang]}
             fill
             className="object-cover"
             priority
@@ -49,7 +54,7 @@ export default async function ProjectPage({ params }: PageProps<'/[lang]/project
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">
-            {project.title[lang]}
+            {title[lang]}
           </h1>
           <div className="flex items-center gap-3 shrink-0">
             {project.githubUrl && (
@@ -71,18 +76,8 @@ export default async function ProjectPage({ params }: PageProps<'/[lang]/project
 
         {/* Description */}
         <p className="text-white/60 text-base leading-relaxed mb-10">
-          {project.description[lang]}
+          {description[lang]}
         </p>
-
-        {/* Image slider */}
-        {project.images.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-lg font-semibold text-white mb-4">
-              {lang === 'tr' ? 'Ekran Görüntüleri' : 'Screenshots'}
-            </h2>
-            <ImageSlider images={project.images} alt={project.title[lang]} />
-          </div>
-        )}
 
         {/* Technologies */}
         <div>

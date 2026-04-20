@@ -3,19 +3,23 @@ import { getDictionary, hasLocale } from './dictionaries'
 import Hero from '@/components/sections/Hero'
 import Skills from '@/components/sections/Skills'
 import Projects from '@/components/sections/Projects'
+import { getPublishedProjects } from '@/lib/db/queries'
 
 export default async function Page({ params }: PageProps<'/[lang]'>) {
   const { lang } = await params
 
   if (!hasLocale(lang)) notFound()
 
-  const dict = await getDictionary(lang)
+  const [dict, projects] = await Promise.all([
+    getDictionary(lang),
+    getPublishedProjects(),
+  ])
 
   return (
     <main>
       <Hero dict={dict.hero} locale={lang} />
       <Skills dict={dict.skills} />
-      <Projects dict={dict.projects} locale={lang} />
+      <Projects dict={dict.projects} locale={lang} projects={projects} />
     </main>
   )
 }

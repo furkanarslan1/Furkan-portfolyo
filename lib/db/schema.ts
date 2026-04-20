@@ -4,6 +4,7 @@ export type MultiLang = { tr: string; en: string }
 
 export const projects = pgTable('projects', {
   id: serial('id').primaryKey(),
+  slug: text('slug').unique().notNull(),
   title: jsonb('title').$type<MultiLang>().notNull(),
   shortDescription: jsonb('short_description').$type<MultiLang>().notNull(),
   description: jsonb('description').$type<MultiLang>().notNull(),

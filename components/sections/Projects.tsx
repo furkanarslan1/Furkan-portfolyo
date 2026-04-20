@@ -4,8 +4,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { SiGithub } from 'react-icons/si'
 import { ArrowRight, ExternalLink } from 'lucide-react'
-import { projects } from '@/lib/data/projects'
 import { type Locale } from '@/app/[lang]/dictionaries'
+
+type MultiLang = { tr: string; en: string }
+
+type Project = {
+  id: number
+  slug: string
+  title: MultiLang
+  shortDescription: MultiLang
+  imageUrl: string
+  tags: string[]
+  githubUrl: string | null
+  liveUrl: string | null
+}
 
 type ProjectsDict = {
   title: string
@@ -15,7 +27,15 @@ type ProjectsDict = {
   view_all: string
 }
 
-export default function Projects({ dict, locale }: { dict: ProjectsDict; locale: Locale }) {
+export default function Projects({
+  dict,
+  locale,
+  projects,
+}: {
+  dict: ProjectsDict
+  locale: Locale
+  projects: Project[]
+}) {
   const visible = projects.slice(0, 3)
 
   return (
@@ -39,7 +59,7 @@ export default function Projects({ dict, locale }: { dict: ProjectsDict; locale:
               {/* Cover image */}
               <div className="relative w-full aspect-video overflow-hidden">
                 <Image
-                  src={project.coverImage}
+                  src={project.imageUrl}
                   alt={project.title[locale]}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"

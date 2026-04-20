@@ -14,7 +14,8 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar'
-import { LayoutDashboard, FolderKanban, LayoutTemplate, Settings } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, LayoutTemplate } from 'lucide-react'
+import LogoutButton from './LogoutButton'
 
 const navItems = [
   {
@@ -69,13 +70,14 @@ export default function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="px-4 py-4 border-t border-sidebar-border">
+      <SidebarFooter className="px-4 py-4 border-t border-sidebar-border flex flex-col gap-3">
         <Link
-          href="/"
+          href="/tr"
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           ← Siteye Dön
         </Link>
+        <LogoutButton />
       </SidebarFooter>
     </Sidebar>
   )

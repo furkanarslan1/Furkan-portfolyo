@@ -12,7 +12,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { createProject } from '@/lib/actions/projects'
 
 const schema = z.object({
-  slug: z.string().min(1, 'Zorunlu'),
   titleTr: z.string().min(1, 'Zorunlu'),
   titleEn: z.string().min(1, 'Zorunlu'),
   shortDescTr: z.string().min(1, 'Zorunlu'),
@@ -50,11 +49,6 @@ export default function ProjectForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-2xl">
-      {/* Slug */}
-      <Field label="Slug" error={errors.slug?.message}>
-        <Input {...register('slug')} placeholder="qr-menu" />
-      </Field>
-
       {/* Titles */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Başlık (TR)" error={errors.titleTr?.message}>

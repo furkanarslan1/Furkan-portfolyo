@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getIronSession } from 'iron-session'
 
 const locales = ['tr', 'en'] as const
 const defaultLocale = 'tr'
+
+const sessionOptions = {
+  password: process.env.SESSION_SECRET!,
+  cookieName: 'admin_session',
+  cookieOptions: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax' as const,
+  },
+}
 
 function getLocale(request: NextRequest): string {
   const acceptLanguage = request.headers.get('accept-language') ?? ''
@@ -10,8 +21,26 @@ function getLocale(request: NextRequest): string {
   return locales.includes(preferred as (typeof locales)[number]) ? preferred : defaultLocale
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // Admin route koruması
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    const response = NextResponse.next()
+    const session = await getIronSession<{ admin?: { loggedIn: boolean } }>(
+      request,
+      response,
+      sessionOptions
+    )
+
+    if (!session.admin?.loggedIn) {
+      return NextResponse.redirect(new URL('/admin/login', request.url))
+    }
+    return response
+  }
+
+  // Locale redirect (admin ve login hariç)
+  if (pathname.startsWith('/admin')) return
 
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -25,5 +54,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|api|admin|favicon.ico|.*\\..*).*)'],
+  matcher: ['/((?!_next|api|favicon.ico|.*\\..*).*)'],
 }
