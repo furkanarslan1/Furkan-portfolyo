@@ -1,4 +1,4 @@
-import { pgTable, serial, text, jsonb, integer, boolean, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, jsonb, integer, boolean, timestamp, varchar, index } from 'drizzle-orm/pg-core'
 
 export type MultiLang = { tr: string; en: string }
 
@@ -16,7 +16,9 @@ export const projects = pgTable('projects', {
   order: integer('order').default(0).notNull(),
   published: boolean('published').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-})
+}, (t) => [
+  index('projects_order_published_idx').on(t.order, t.published),
+])
 
 export const skills = pgTable('skills', {
   id: serial('id').primaryKey(),
@@ -32,7 +34,9 @@ export const galleryImages = pgTable('gallery_images', {
   caption: text('caption'),
   order: integer('order').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-})
+}, (t) => [
+  index('gallery_order_idx').on(t.order),
+])
 
 export const sectionContent = pgTable('section_content', {
   id: serial('id').primaryKey(),

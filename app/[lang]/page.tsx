@@ -1,3 +1,5 @@
+export const revalidate = 3600
+
 import { notFound } from 'next/navigation'
 import { getDictionary, hasLocale } from './dictionaries'
 import Hero from '@/components/sections/Hero'

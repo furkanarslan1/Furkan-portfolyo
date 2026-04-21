@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { nanoid } from 'nanoid'
+import { requireAuth } from '@/lib/session'
 
 function slugify(text: string) {
   return text
@@ -33,10 +34,11 @@ const projectSchema = z.object({
 })
 
 export async function createProject(formData: FormData) {
+  await requireAuth()
   const raw = Object.fromEntries(formData)
   const data = projectSchema.parse({ ...raw, published: raw.published === 'true' })
 
-  const slug = `${slugify(data.titleTr)}-${nanoid(6)}`
+  const slug = `${slugify(data.titleTr)}-${nanoid(8)}`
 
   await db.insert(projects).values({
     slug,
@@ -58,6 +60,7 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: number, formData: FormData) {
+  await requireAuth()
   const raw = Object.fromEntries(formData)
   const data = projectSchema.parse({ ...raw, published: raw.published === 'true' })
 
@@ -80,6 +83,7 @@ export async function updateProject(id: number, formData: FormData) {
 }
 
 export async function deleteProject(id: number) {
+  await requireAuth()
   await db.delete(projects).where(eq(projects.id, id))
   revalidatePath('/admin/projects')
   revalidatePath('/tr')
@@ -87,6 +91,7 @@ export async function deleteProject(id: number) {
 }
 
 export async function togglePublished(id: number, published: boolean) {
+  await requireAuth()
   await db.update(projects).set({ published }).where(eq(projects.id, id))
   revalidatePath('/admin/projects')
 }

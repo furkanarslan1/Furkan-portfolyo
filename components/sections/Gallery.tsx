@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import Image from "next/image";
@@ -26,27 +26,9 @@ const labels = {
   en: { title: "Gallery", subtitle: "Moments in photos" },
 };
 
-function GallerySkeleton() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div
-          key={i}
-          className="aspect-4/3 rounded-2xl bg-muted animate-pulse"
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function Gallery({ images, locale }: Props) {
-  const [loaded, setLoaded] = useState(false);
   const [modalIndex, setModalIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 400);
-    return () => clearTimeout(t);
-  }, []);
 
   if (images.length === 0) return null;
 
@@ -70,10 +52,7 @@ export default function Gallery({ images, locale }: Props) {
             <p className="text-muted-foreground text-sm mt-1">{t.subtitle}</p>
           </div>
 
-          {!loaded ? (
-            <GallerySkeleton />
-          ) : (
-            <Swiper
+          <Swiper
               modules={[Autoplay, Pagination]}
               spaceBetween={20}
               slidesPerView={1}
@@ -112,7 +91,6 @@ export default function Gallery({ images, locale }: Props) {
                 </SwiperSlide>
               ))}
             </Swiper>
-          )}
         </div>
       </section>
 

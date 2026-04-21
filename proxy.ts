@@ -11,7 +11,8 @@ const sessionOptions = {
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'lax' as const,
+    sameSite: 'strict' as const,
+    maxAge: 60 * 60 * 8,
   },
 }
 

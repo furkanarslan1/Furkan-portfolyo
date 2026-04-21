@@ -5,13 +5,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { createProject } from '@/lib/actions/projects'
+import { createProject, updateProject } from '@/lib/actions/projects'
 import ImageUploader from './ImageUploader'
-import { toast } from 'sonner'
+import type { InferSelectModel } from 'drizzle-orm'
+import type { projects } from '@/lib/db/schema'
+import type { MultiLang } from '@/lib/db/schema'
+
+type Project = InferSelectModel<typeof projects>
 
 const schema = z.object({
   titleTr: z.string().min(1, 'Zorunlu'),
@@ -30,34 +35,64 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-export default function ProjectForm() {
+type Props = {
+  project?: Project
+}
+
+export default function ProjectForm({ project }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const isEdit = !!project
+
+  const title = project?.title as MultiLang | undefined
+  const shortDesc = project?.shortDescription as MultiLang | undefined
+  const desc = project?.description as MultiLang | undefined
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { imageUrl: '', imagePublicId: '', order: 0 },
+    defaultValues: isEdit ? {
+      titleTr: title!.tr,
+      titleEn: title!.en,
+      shortDescTr: shortDesc!.tr,
+      shortDescEn: shortDesc!.en,
+      descTr: desc!.tr,
+      descEn: desc!.en,
+      imageUrl: project!.imageUrl,
+      imagePublicId: project!.imagePublicId,
+      liveUrl: project!.liveUrl ?? '',
+      githubUrl: project!.githubUrl ?? '',
+      tags: project!.tags.join(', '),
+      order: project!.order,
+    } : {
+      imageUrl: '',
+      imagePublicId: '',
+      order: 0,
+    },
   })
 
   function onSubmit(values: FormValues) {
     const fd = new FormData()
     Object.entries(values).forEach(([k, v]) => fd.append(k, String(v ?? '')))
-    fd.append('published', 'true')
+    fd.append('published', isEdit ? String(project!.published) : 'true')
 
     startTransition(async () => {
       try {
-        await createProject(fd)
-        toast.success('Proje kaydedildi')
+        if (isEdit) {
+          await updateProject(project!.id, fd)
+          toast.success('Proje güncellendi')
+        } else {
+          await createProject(fd)
+          toast.success('Proje kaydedildi')
+        }
         router.push('/admin/projects')
       } catch {
-        toast.error('Kaydetme başarısız')
+        toast.error(isEdit ? 'Güncelleme başarısız' : 'Kaydetme başarısız')
       }
     })
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-2xl">
-      {/* Titles */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Başlık (TR)" error={errors.titleTr?.message}>
           <Input {...register('titleTr')} />
@@ -67,7 +102,6 @@ export default function ProjectForm() {
         </Field>
       </div>
 
-      {/* Short descriptions */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Kısa Açıklama (TR)" error={errors.shortDescTr?.message}>
           <Textarea {...register('shortDescTr')} rows={3} />
@@ -77,7 +111,6 @@ export default function ProjectForm() {
         </Field>
       </div>
 
-      {/* Full descriptions */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Açıklama (TR)" error={errors.descTr?.message}>
           <Textarea {...register('descTr')} rows={5} />
@@ -87,7 +120,6 @@ export default function ProjectForm() {
         </Field>
       </div>
 
-      {/* Image upload */}
       <Controller
         control={control}
         name="imageUrl"
@@ -112,7 +144,6 @@ export default function ProjectForm() {
         )}
       />
 
-      {/* Links */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Canlı URL (opsiyonel)" error={errors.liveUrl?.message}>
           <Input {...register('liveUrl')} placeholder="https://..." />
@@ -122,19 +153,18 @@ export default function ProjectForm() {
         </Field>
       </div>
 
-      {/* Tags & Order */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="Etiketler (virgülle ayırın)" error={errors.tags?.message}>
           <Input {...register('tags')} placeholder="Next.js, TypeScript, Tailwind" />
         </Field>
         <Field label="Sıra" error={errors.order?.message}>
-          <Input {...register('order', { valueAsNumber: true })} type="number" defaultValue={0} />
+          <Input {...register('order', { valueAsNumber: true })} type="number" />
         </Field>
       </div>
 
       <div className="flex gap-3">
         <Button type="submit" disabled={pending}>
-          {pending ? 'Kaydediliyor...' : 'Kaydet'}
+          {pending ? 'Kaydediliyor...' : isEdit ? 'Güncelle' : 'Kaydet'}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>
           İptal

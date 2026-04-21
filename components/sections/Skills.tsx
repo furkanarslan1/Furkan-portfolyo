@@ -17,7 +17,7 @@ import {
   SiShadcnui,
 } from "react-icons/si";
 import { FaReact } from "react-icons/fa";
-import { TbBrandReactNative } from "react-icons/tb";
+import { TbDatabase } from "react-icons/tb";
 import { MdPhoneAndroid } from "react-icons/md";
 import { IconType } from "react-icons";
 
@@ -43,7 +43,7 @@ const skills: Skill[] = [
   { name: "SCSS", icon: SiSass, color: "#cc6699" },
   { name: "shadcn/ui", icon: SiShadcnui, color: "#ffffff" },
   { name: "Redux Toolkit", icon: SiRedux, color: "#764abc" },
-  { name: "Zustand", icon: TbBrandReactNative, color: "#a78bfa" },
+  { name: "Zustand", icon: TbDatabase, color: "#a78bfa" },
   { name: "React Hook Form", icon: FaReact, color: "#ec5990" },
   { name: "Zod", icon: SiZod, color: "#3e67b1" },
   { name: "Axios", icon: SiAxios, color: "#5a29e4" },

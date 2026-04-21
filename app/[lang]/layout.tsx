@@ -6,6 +6,8 @@ import { getDictionary, hasLocale } from './dictionaries'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 
+const BASE_URL = 'https://furkanarslan.dev'
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -16,9 +18,39 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-export const metadata: Metadata = {
-  title: 'Furkan Arslan',
-  description: 'Full Stack Developer Portfolio',
+export async function generateMetadata({ params }: LayoutProps<'/[lang]'>): Promise<Metadata> {
+  const { lang } = await params
+  const isTr = lang === 'tr'
+
+  const title = 'Furkan Arslan'
+  const description = isTr
+    ? 'Full Stack Developer — Next.js, TypeScript, Node.js ile modern web uygulamaları geliştiriyorum.'
+    : 'Full Stack Developer — Building modern web applications with Next.js, TypeScript and Node.js.'
+
+  return {
+    title: { default: title, template: `%s | ${title}` },
+    description,
+    metadataBase: new URL(BASE_URL),
+    alternates: {
+      canonical: `${BASE_URL}/${lang}`,
+      languages: { tr: `${BASE_URL}/tr`, en: `${BASE_URL}/en` },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${BASE_URL}/${lang}`,
+      siteName: title,
+      locale: isTr ? 'tr_TR' : 'en_US',
+      type: 'website',
+      images: [{ url: `${BASE_URL}/og.png`, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    robots: { index: true, follow: true },
+  }
 }
 
 export async function generateStaticParams() {

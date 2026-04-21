@@ -13,12 +13,19 @@ const sessionOptions = {
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'lax' as const,
-    maxAge: 60 * 60 * 24 * 7, // 7 gün
+    sameSite: 'strict' as const,
+    maxAge: 60 * 60 * 8, // 8 saat
   },
 }
 
 export async function getSession() {
   const cookieStore = await cookies()
   return getIronSession<IronSessionData>(cookieStore, sessionOptions)
+}
+
+export async function requireAuth() {
+  const session = await getSession()
+  if (!session.admin?.loggedIn) {
+    throw new Error('Unauthorized')
+  }
 }

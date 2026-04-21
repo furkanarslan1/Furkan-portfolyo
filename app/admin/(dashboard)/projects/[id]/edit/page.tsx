@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import EditProjectForm from './EditProjectForm'
+import ProjectForm from '@/components/admin/ProjectForm'
 
 export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -19,7 +19,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
           {(project.title as { tr: string }).tr}
         </p>
       </div>
-      <EditProjectForm project={project} />
+      <ProjectForm project={project} />
     </div>
   )
 }
