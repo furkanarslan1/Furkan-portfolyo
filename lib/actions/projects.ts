@@ -16,7 +16,7 @@ function slugify(text: string) {
     .replace(/^-|-$/g, '')
 }
 
-export const projectSchema = z.object({
+const projectSchema = z.object({
   titleTr: z.string().min(1),
   titleEn: z.string().min(1),
   shortDescTr: z.string().min(1),
@@ -51,6 +51,28 @@ export async function createProject(formData: FormData) {
     order: data.order,
     published: data.published,
   })
+
+  revalidatePath('/admin/projects')
+  revalidatePath('/tr')
+  revalidatePath('/en')
+}
+
+export async function updateProject(id: number, formData: FormData) {
+  const raw = Object.fromEntries(formData)
+  const data = projectSchema.parse({ ...raw, published: raw.published === 'true' })
+
+  await db.update(projects).set({
+    title: { tr: data.titleTr, en: data.titleEn },
+    shortDescription: { tr: data.shortDescTr, en: data.shortDescEn },
+    description: { tr: data.descTr, en: data.descEn },
+    imageUrl: data.imageUrl,
+    imagePublicId: data.imagePublicId,
+    liveUrl: data.liveUrl || null,
+    githubUrl: data.githubUrl || null,
+    tags: data.tags.split(',').map((t) => t.trim()).filter(Boolean),
+    order: data.order,
+    published: data.published,
+  }).where(eq(projects.id, id))
 
   revalidatePath('/admin/projects')
   revalidatePath('/tr')

@@ -31,8 +31,10 @@ export default function ImageUploader({ folder, value, publicId, onChange, label
       try {
         const result = await uploadImage(fd, folder)
         onChange(result.url, result.publicId)
-      } catch {
-        setError('Yükleme başarısız oldu.')
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e)
+        console.error('[ImageUploader]', msg)
+        setError(`Yükleme başarısız: ${msg}`)
       }
     })
   }
