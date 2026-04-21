@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import Script from 'next/script'
 import '../globals.css'
 import { getDictionary, hasLocale } from './dictionaries'
 import Header from '@/components/layout/Header'
@@ -101,6 +102,13 @@ export default async function RootLayout({
         <Header dict={dict} locale={lang} />
         {children}
         <Footer />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-FBFQMDV536" strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-FBFQMDV536');
+        `}</Script>
       </body>
     </html>
   )
