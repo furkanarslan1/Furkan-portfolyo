@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { type Locale } from "@/app/[lang]/dictionaries";
+import HeroTypewriter from "./HeroTypewriter";
 
 type HeroDict = {
   greeting: string;
@@ -33,11 +34,7 @@ export default function Hero({
         <h1 className="text-3xl sm:text-5xl font-bold text-white mb-3">
           {dict.greeting} Furkan!
         </h1>
-        <p className="text-xl sm:text-2xl font-mono text-white/80">
-          {"<"}Frontend Developer.
-          <span className="inline-block w-0.5 h-5 bg-white ml-0.5 align-middle animate-pulse" />
-          {">"}
-        </p>
+        <HeroTypewriter locale={locale} />
       </div>
 
       {/* Photo + Text row */}

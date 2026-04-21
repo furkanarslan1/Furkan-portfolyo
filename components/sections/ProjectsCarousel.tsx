@@ -26,12 +26,12 @@ type Props = {
 
 const labels = {
   tr: {
-    heading: "Proje Deneyimlerim",
+    heading: "Proje Notlarım",
     sub: "Üzerinde çalıştığım projeler",
     readMore: "Daha fazla oku",
   },
   en: {
-    heading: "My Project Experience",
+    heading: "Project Notes",
     sub: "Projects I have worked on",
     readMore: "Read more",
   },

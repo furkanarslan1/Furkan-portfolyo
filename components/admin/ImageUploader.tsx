@@ -51,7 +51,7 @@ export default function ImageUploader({ folder, value, publicId, onChange, label
 
       {value ? (
         <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border">
-          <Image src={value} alt={label} fill className="object-cover" />
+          <Image src={value} alt={label} fill sizes="640px" className="object-cover" />
           <button
             type="button"
             onClick={() => onChange('', '')}
