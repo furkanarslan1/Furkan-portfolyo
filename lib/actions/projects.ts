@@ -2,11 +2,12 @@
 
 import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, max, lt, gt, asc, desc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { nanoid } from 'nanoid'
 import { requireAuth } from '@/lib/session'
+import { deleteFromCloudinary } from '@/lib/cloudinary/upload'
 
 function slugify(text: string) {
   return text
@@ -29,7 +30,6 @@ const projectSchema = z.object({
   liveUrl: z.string().url().optional().or(z.literal('')),
   githubUrl: z.string().url().optional().or(z.literal('')),
   tags: z.string(),
-  order: z.coerce.number().default(0),
   published: z.boolean().default(true),
 })
 
@@ -39,6 +39,9 @@ export async function createProject(formData: FormData) {
   const data = projectSchema.parse({ ...raw, published: raw.published === 'true' })
 
   const slug = `${slugify(data.titleTr)}-${nanoid(8)}`
+
+  const result = await db.select({ maxOrder: max(projects.order) }).from(projects)
+  const nextOrder = (result[0]?.maxOrder ?? -1) + 1
 
   await db.insert(projects).values({
     slug,
@@ -50,7 +53,7 @@ export async function createProject(formData: FormData) {
     liveUrl: data.liveUrl || null,
     githubUrl: data.githubUrl || null,
     tags: data.tags.split(',').map((t) => t.trim()).filter(Boolean),
-    order: data.order,
+    order: nextOrder,
     published: data.published,
   })
 
@@ -64,6 +67,11 @@ export async function updateProject(id: number, formData: FormData) {
   const raw = Object.fromEntries(formData)
   const data = projectSchema.parse({ ...raw, published: raw.published === 'true' })
 
+  const [existing] = await db.select({ imagePublicId: projects.imagePublicId }).from(projects).where(eq(projects.id, id))
+  if (existing && existing.imagePublicId !== data.imagePublicId) {
+    await deleteFromCloudinary(existing.imagePublicId)
+  }
+
   await db.update(projects).set({
     title: { tr: data.titleTr, en: data.titleEn },
     shortDescription: { tr: data.shortDescTr, en: data.shortDescEn },
@@ -73,7 +81,6 @@ export async function updateProject(id: number, formData: FormData) {
     liveUrl: data.liveUrl || null,
     githubUrl: data.githubUrl || null,
     tags: data.tags.split(',').map((t) => t.trim()).filter(Boolean),
-    order: data.order,
     published: data.published,
   }).where(eq(projects.id, id))
 
@@ -90,8 +97,28 @@ export async function deleteProject(id: number) {
   revalidatePath('/en')
 }
 
+export async function reorderProject(id: number, direction: 'up' | 'down') {
+  await requireAuth()
+  const [current] = await db.select().from(projects).where(eq(projects.id, id))
+  if (!current) return
+
+  const neighbor = direction === 'up'
+    ? await db.select().from(projects).where(lt(projects.order, current.order)).orderBy(desc(projects.order)).limit(1)
+    : await db.select().from(projects).where(gt(projects.order, current.order)).orderBy(asc(projects.order)).limit(1)
+
+  if (!neighbor[0]) return
+
+  await db.update(projects).set({ order: neighbor[0].order }).where(eq(projects.id, id))
+  await db.update(projects).set({ order: current.order }).where(eq(projects.id, neighbor[0].id))
+  revalidatePath('/admin/projects')
+  revalidatePath('/tr')
+  revalidatePath('/en')
+}
+
 export async function togglePublished(id: number, published: boolean) {
   await requireAuth()
   await db.update(projects).set({ published }).where(eq(projects.id, id))
   revalidatePath('/admin/projects')
+  revalidatePath('/tr')
+  revalidatePath('/en')
 }

@@ -30,7 +30,6 @@ const schema = z.object({
   liveUrl: z.string().url('Geçerli URL').optional().or(z.literal('')),
   githubUrl: z.string().url('Geçerli URL').optional().or(z.literal('')),
   tags: z.string().min(1, 'En az bir etiket giriniz'),
-  order: z.number().int().nonnegative(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -62,11 +61,9 @@ export default function ProjectForm({ project }: Props) {
       liveUrl: project!.liveUrl ?? '',
       githubUrl: project!.githubUrl ?? '',
       tags: project!.tags.join(', '),
-      order: project!.order,
     } : {
       imageUrl: '',
       imagePublicId: '',
-      order: 0,
     },
   })
 
@@ -153,14 +150,9 @@ export default function ProjectForm({ project }: Props) {
         </Field>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Etiketler (virgülle ayırın)" error={errors.tags?.message}>
-          <Input {...register('tags')} placeholder="Next.js, TypeScript, Tailwind" />
-        </Field>
-        <Field label="Sıra" error={errors.order?.message}>
-          <Input {...register('order', { valueAsNumber: true })} type="number" />
-        </Field>
-      </div>
+      <Field label="Etiketler (virgülle ayırın)" error={errors.tags?.message}>
+        <Input {...register('tags')} placeholder="Next.js, TypeScript, Tailwind" />
+      </Field>
 
       <div className="flex gap-3">
         <Button type="submit" disabled={pending}>

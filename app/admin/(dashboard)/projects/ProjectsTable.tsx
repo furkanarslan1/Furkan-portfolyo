@@ -3,9 +3,10 @@
 import { useTransition } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
+import { Pencil, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { deleteProject, togglePublished } from '@/lib/actions/projects'
+import { deleteProject, togglePublished, reorderProject } from '@/lib/actions/projects'
+import { toast } from 'sonner'
 import type { projects } from '@/lib/db/schema'
 import type { InferSelectModel } from 'drizzle-orm'
 
@@ -13,6 +14,16 @@ type Project = InferSelectModel<typeof projects>
 
 export default function ProjectsTable({ data }: { data: Project[] }) {
   const [pending, startTransition] = useTransition()
+
+  function reorder(id: number, direction: 'up' | 'down') {
+    startTransition(async () => {
+      try {
+        await reorderProject(id, direction)
+      } catch {
+        toast.error('Sıralama başarısız')
+      }
+    })
+  }
 
   if (data.length === 0) {
     return (
@@ -27,6 +38,7 @@ export default function ProjectsTable({ data }: { data: Project[] }) {
       <table className="w-full text-sm">
         <thead className="border-b border-border bg-muted/30">
           <tr>
+            <th className="text-left px-4 py-3 font-medium text-muted-foreground w-16">Sıra</th>
             <th className="text-left px-4 py-3 font-medium text-muted-foreground">Proje</th>
             <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Etiketler</th>
             <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden sm:table-cell">Durum</th>
@@ -34,10 +46,28 @@ export default function ProjectsTable({ data }: { data: Project[] }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {data.map((project) => {
+          {data.map((project, idx) => {
             const title = project.title as { tr: string; en: string }
             return (
               <tr key={project.id} className="hover:bg-muted/20 transition-colors">
+                <td className="px-4 py-3">
+                  <div className="flex flex-col gap-0.5">
+                    <Button
+                      variant="ghost" size="icon" className="h-6 w-6"
+                      disabled={pending || idx === 0}
+                      onClick={() => reorder(project.id, 'up')}
+                    >
+                      <ChevronUp className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost" size="icon" className="h-6 w-6"
+                      disabled={pending || idx === data.length - 1}
+                      onClick={() => reorder(project.id, 'down')}
+                    >
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="relative w-12 h-8 rounded-md overflow-hidden shrink-0 bg-muted">

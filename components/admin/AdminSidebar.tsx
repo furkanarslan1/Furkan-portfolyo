@@ -14,7 +14,7 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar'
-import { LayoutDashboard, FolderKanban, LayoutTemplate, Images } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, LayoutTemplate, Images, Briefcase } from 'lucide-react'
 import LogoutButton from './LogoutButton'
 
 const navItems = [
@@ -32,6 +32,11 @@ const navItems = [
     label: 'Sayfa İçerikleri',
     href: '/admin/sections',
     icon: LayoutTemplate,
+  },
+  {
+    label: 'Proje Deneyimleri',
+    href: '/admin/experiences',
+    icon: Briefcase,
   },
   {
     label: 'Galeri',

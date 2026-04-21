@@ -38,6 +38,17 @@ export const galleryImages = pgTable('gallery_images', {
   index('gallery_order_idx').on(t.order),
 ])
 
+export const experiences = pgTable('experiences', {
+  id: serial('id').primaryKey(),
+  title: jsonb('title').$type<MultiLang>().notNull(),
+  description: jsonb('description').$type<MultiLang>().notNull(),
+  liveUrl: text('live_url'),
+  githubUrl: text('github_url'),
+  order: integer('order').default(0).notNull(),
+}, (t) => [
+  index('experiences_order_idx').on(t.order),
+])
+
 export const sectionContent = pgTable('section_content', {
   id: serial('id').primaryKey(),
   key: varchar('key', { length: 50 }).unique().notNull(),
