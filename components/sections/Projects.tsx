@@ -118,14 +118,16 @@ export default function Projects({
         {/* View all button */}
         {projects.length > 3 && (
           <div className="flex justify-center mt-10">
-            <Link
-              href={`/${locale}/projects`}
+            <a
+              href="https://github.com/furkanarslan1"
+              target="_blank"
+              rel="noopener noreferrer"
               className="animated-border-image flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-80"
               style={{ background: 'rgba(255,255,255,0.05)' }}
             >
               {dict.view_all}
               <ExternalLink size={14} />
-            </Link>
+            </a>
           </div>
         )}
       </div>
