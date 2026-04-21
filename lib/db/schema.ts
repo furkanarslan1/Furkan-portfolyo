@@ -25,6 +25,15 @@ export const skills = pgTable('skills', {
   order: integer('order').default(0).notNull(),
 })
 
+export const galleryImages = pgTable('gallery_images', {
+  id: serial('id').primaryKey(),
+  imageUrl: text('image_url').notNull(),
+  imagePublicId: text('image_public_id').notNull(),
+  caption: text('caption'),
+  order: integer('order').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
 export const sectionContent = pgTable('section_content', {
   id: serial('id').primaryKey(),
   key: varchar('key', { length: 50 }).unique().notNull(),

@@ -1,5 +1,5 @@
 import { db } from './index'
-import { projects, sectionContent } from './schema'
+import { projects, sectionContent, galleryImages } from './schema'
 import { eq, asc } from 'drizzle-orm'
 
 export async function getPublishedProjects() {
@@ -16,6 +16,10 @@ export async function getProjectBySlug(slug: string) {
     .from(projects)
     .where(eq(projects.slug, slug))
   return result[0] ?? null
+}
+
+export async function getGalleryImages() {
+  return db.select().from(galleryImages).orderBy(asc(galleryImages.order))
 }
 
 export async function getSectionContent(key: string) {
