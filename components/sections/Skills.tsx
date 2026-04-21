@@ -15,6 +15,9 @@ import {
   SiGithub,
   SiZod,
   SiShadcnui,
+  SiSupabase,
+  SiPostgresql,
+  SiPrisma,
 } from "react-icons/si";
 import { FaReact } from "react-icons/fa";
 import { TbDatabase } from "react-icons/tb";
@@ -47,6 +50,9 @@ const skills: Skill[] = [
   { name: "React Hook Form", icon: FaReact, color: "#ec5990" },
   { name: "Zod", icon: SiZod, color: "#3e67b1" },
   { name: "Axios", icon: SiAxios, color: "#5a29e4" },
+  { name: "Supabase", icon: SiSupabase, color: "#3ecf8e" },
+  { name: "Neon", icon: SiPostgresql, color: "#00e599" },
+  { name: "Prisma", icon: SiPrisma, color: "#ffffff" },
   { name: "Git", icon: SiGit, color: "#f05032" },
   { name: "GitHub", icon: SiGithub, color: "#ffffff" },
   { name: "Responsive / Mobile First", icon: MdPhoneAndroid, color: "#34d399" },
