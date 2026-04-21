@@ -73,11 +73,7 @@ function OrbitSystem() {
                 style={{
                   top: '50%', left: '50%',
                   width: 0, height: 0,
-                  animationName: 'spin-orbit',
-                  animationDuration: `${ring.duration}s`,
-                  animationTimingFunction: 'linear',
-                  animationIterationCount: 'infinite',
-                  animationDelay: `${delay}s`,
+                  animation: `spin-orbit ${ring.duration}s linear ${delay}s infinite`,
                 }}
               >
                 <div
@@ -90,11 +86,7 @@ function OrbitSystem() {
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.08)',
                     backdropFilter: 'blur(4px)',
-                    animationName: 'spin-counter',
-                    animationDuration: `${ring.duration}s`,
-                    animationTimingFunction: 'linear',
-                    animationIterationCount: 'infinite',
-                    animationDelay: `${delay}s`,
+                    animation: `spin-counter ${ring.duration}s linear ${delay}s infinite`,
                   }}
                 >
                   <item.Icon size={iconSize} color={item.color} title={item.label} />
