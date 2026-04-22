@@ -131,11 +131,13 @@ export default function About({
   const desc  = aboutContent?.[descKey]  || dict.description
 
   return (
-    <section id="about" className="py-24 px-6">
+    <section id="about" className="py-24 px-6 overflow-hidden">
       <div className="mx-auto max-w-5xl flex flex-col lg:flex-row items-center gap-16">
         {/* Orbit */}
-        <div className="shrink-0">
-          <OrbitSystem />
+        <div className="shrink-0 flex justify-center w-full lg:w-auto">
+          <div className="-my-[73px] sm:-my-[21px] lg:my-0 scale-[0.65] sm:scale-90 lg:scale-100 origin-center">
+            <OrbitSystem />
+          </div>
         </div>
 
         {/* Text */}

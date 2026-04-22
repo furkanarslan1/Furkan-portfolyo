@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import { X, ExternalLink } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import "swiper/css";
@@ -39,6 +40,16 @@ const labels = {
 
 export default function ProjectsCarousel({ experiences, locale }: Props) {
   const [modal, setModal] = useState<Experience | null>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+
+  const openModal = (exp: Experience) => {
+    swiperRef.current?.autoplay?.stop();
+    setModal(exp);
+  };
+  const closeModal = () => {
+    setModal(null);
+    swiperRef.current?.autoplay?.start();
+  };
 
   if (experiences.length === 0) return null;
 
@@ -62,6 +73,7 @@ export default function ProjectsCarousel({ experiences, locale }: Props) {
             autoplay={{ delay: 4500, disableOnInteraction: false }}
             pagination={{ clickable: true }}
             className="pb-10"
+            onSwiper={(s) => { swiperRef.current = s; }}
           >
             {experiences.map((exp) => (
               <SwiperSlide key={exp.id}>
@@ -81,7 +93,7 @@ export default function ProjectsCarousel({ experiences, locale }: Props) {
                   </p>
 
                   <button
-                    onClick={() => setModal(exp)}
+                    onClick={() => openModal(exp)}
                     className="self-start text-sm text-white px-4 py-1 rounded-2xl cursor-pointer shadow-sm hover:shadow-indigo-500/50 hover:shadow-md transition-all duration-300 bg-linear-to-r from-indigo-500 to-violet-500"
                   >
                     {t.readMore}
@@ -97,7 +109,7 @@ export default function ProjectsCarousel({ experiences, locale }: Props) {
       {modal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-          onClick={() => setModal(null)}
+          onClick={closeModal}
         >
           <div
             className="relative w-full max-w-lg rounded-2xl border border-white/10 p-7 shadow-2xl"
@@ -108,7 +120,7 @@ export default function ProjectsCarousel({ experiences, locale }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              onClick={() => setModal(null)}
+              onClick={closeModal}
               className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
             >
               <X size={15} />

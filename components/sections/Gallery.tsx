@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import "swiper/css";
@@ -29,6 +30,16 @@ const labels = {
 
 export default function Gallery({ images, locale }: Props) {
   const [modalIndex, setModalIndex] = useState<number | null>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+
+  const openModal = (idx: number) => {
+    swiperRef.current?.autoplay?.stop();
+    setModalIndex(idx);
+  };
+  const closeModal = () => {
+    setModalIndex(null);
+    swiperRef.current?.autoplay?.start();
+  };
 
   if (images.length === 0) return null;
 
@@ -64,11 +75,12 @@ export default function Gallery({ images, locale }: Props) {
                 1024: { slidesPerView: 3 },
               }}
               className="pb-10"
+              onSwiper={(s) => { swiperRef.current = s; }}
             >
               {images.map((img, idx) => (
                 <SwiperSlide key={img.id}>
                   <button
-                    onClick={() => setModalIndex(idx)}
+                    onClick={() => openModal(idx)}
                     className="w-full text-left group"
                   >
                     <div className="relative aspect-4/3 rounded-2xl overflow-hidden border border-border group-hover:border-primary/40 transition-colors">
@@ -98,7 +110,7 @@ export default function Gallery({ images, locale }: Props) {
       {activeImg !== null && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-          onClick={() => setModalIndex(null)}
+          onClick={closeModal}
         >
           <div
             className="relative w-full max-w-xl rounded-2xl overflow-hidden border border-border shadow-2xl bg-background"
@@ -106,7 +118,7 @@ export default function Gallery({ images, locale }: Props) {
           >
             {/* Close */}
             <button
-              onClick={() => setModalIndex(null)}
+              onClick={closeModal}
               className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
             >
               <X size={16} />
