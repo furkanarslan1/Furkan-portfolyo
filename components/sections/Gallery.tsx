@@ -23,8 +23,8 @@ type Props = {
 };
 
 const labels = {
-  tr: { title: "Galeri", subtitle: "Fotoğraflardan kareler" },
-  en: { title: "Gallery", subtitle: "Moments in photos" },
+  tr: { title: "Ekran Görüntüleri", subtitle: "Projelerden kareler" },
+  en: { title: "From the Work", subtitle: "Screenshots from projects" },
 };
 
 
